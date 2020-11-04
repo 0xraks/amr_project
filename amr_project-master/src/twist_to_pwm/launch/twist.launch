@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- turtlebot_teleop_key already has its own built in velocity smoother -->
+  <node pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" name="teleop_twist_keyboard"  output="screen"/>
+  <node pkg="twist_to_pwm" type="driver.py" name="driver" output="screen" launch-prefix="xterm -e" />
+
+</launch>

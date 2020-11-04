@@ -1,0 +1,5 @@
+{
+    "board": "arduino:avr:mega",
+    "configuration": "cpu=atmega2560",
+    "sketch": "ino_files_for_arduinoide\\mega_drivers.ino"
+}
