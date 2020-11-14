@@ -48,11 +48,11 @@ class Driver:
         if  left_pwm > 255:
             left_pwm=255
         if right_pwm > 255:
-            rigth_pwm=255
+            right_pwm=255
         if  left_pwm < -255:
             left_pwm=-255
         if right_pwm < -255:
-            rigth_pwm=-255
+            right_pwm=-255
         left_pub.publish(left_pwm)
         right_pub.publish(right_pwm)
 
