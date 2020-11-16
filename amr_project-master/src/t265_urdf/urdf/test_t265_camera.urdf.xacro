@@ -1,0 +1,8 @@
+<robot name="t265" xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:include filename="$(find t265_urdf)/urdf/_t265.urdf.xacro" />
+
+  <link name="base_link" />
+  <sensor_t265 parent="base_link">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </sensor_t265>
+</robot>

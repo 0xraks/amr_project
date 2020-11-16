@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot name="agv" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:include filename='$(find agv_description)/urdf/_d435.urdf.xacro'/>
+	<xacro:include filename='$(find agv_description)/urdf/_d435.gazebo.xacro'/>
+	<xacro:include filename='$(find agv_description)/urdf/_t265.urdf.xacro'/>
+	<xacro:include filename='$(find agv_description)/urdf/_t265.gazebo.xacro'/>
+	<xacro:include filename='$(find agv_description)/urdf/agv_description.gazebo.xacro'/>
+	<xacro:macro name="box_inertia" params="x y z m">
+        <mass value="${m}"/>
+        <inertia  ixx="${m*(y*y+z*z)/12}" ixy = "0" ixz = "0" iyy="${m*(x*x+z*z)/12}" iyz = "0" izz="${m*(x*x+z*z)/12}" /> 
+    </xacro:macro>
+
+	<xacro:macro name="sphere_inertia" params="r m">
+        <inertia  ixx="${2*m*r*r/5}" ixy = "0" ixz = "0"
+                  iyy="${2*m*r*r/5}" iyz = "0"
+                  izz="${2*m*r*r/5}" /> 
+		<mass value="${m}"/>
+	</xacro:macro>
+
+    <xacro:macro name="cylinder_inertia" params="r h m">
+        <mass value="${m}"/>
+        <inertia  ixx="${m*(3*r*r+h*h)/12}" ixy = "0" ixz = "0" iyy="${m*(3*r*r+h*h)/12}" iyz = "0" izz="${m*r*r/2}" />
+    </xacro:macro>
+	
+    <link name="odom"/>
+
+    <link name="base_link">
+		<inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <xacro:box_inertia x="0.7" y="0.35" z="0.09" m="4.0"/>
+            <!-- <mass value="1.0" />
+            <inertia ixx="0.0304098854167" ixy="0.0" ixz="0.0" iyy="0.0456988333333" iyz="0.0" izz="0.0718076520833"/> -->
+        </inertial>
+        <visual>
+        	<origin xyz="-0.3575 0.156 0" rpy="1.572 0 0"/>
+            <geometry>
+                <mesh filename="package://agv_description/urdf/meshes/base_final.STL"/>
+            </geometry>
+        </visual>
+         <collision>
+        	<origin xyz="-0.3575 0.156 0" rpy="1.572 0 0"/>
+            <geometry>
+                <mesh filename="package://agv_description/urdf/meshes/base_final.STL"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <!--<joint name="base_joint" type="fixed">
+    	<parent link="world"/>
+    	<child link="base_footprint"/>
+    	<origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>-->
+
+
+    <joint name="base_link_joint" type="fixed">
+    	<origin xyz="0 0 0.05" rpy="0 0 0" />
+        <parent link="odom"/>
+        <child link="base_link"/>
+    </joint>
+
+    <link name="battery_link">
+		<inertial>
+			<origin xyz="0 0 0.09" rpy="0 0 0"/>
+			<xacro:box_inertia x="0.4" y="0.28" z="0.085" m="2.0"/>
+		</inertial>
+    	<visual>
+    		<origin xyz="0 0 0.09" rpy="0 0 0"/>
+    		<geometry>
+    			<box size="0.4 0.28 0.085" />
+    		</geometry>
+    		<material name="blue">
+       			<color rgba="0 0 0.8 1"/>
+     	    </material>
+    	</visual>
+    	<collision>
+    		<origin xyz="0 0 0.09" rpy="0 0 0"/>
+    		<geometry>
+    			<box size="0.4 0.28 0.085" />
+    		</geometry>
+    		<material name="blue">
+       			<color rgba="0 0 0.8 1"/>
+     	    </material>
+    	</collision>
+    </link>
+
+    <joint name="battery_to_base" type="fixed">
+    	<parent link="base_link"/>
+    	<child link="battery_link"/>
+    </joint>
+
+    <link name="left_wheel">
+		<inertial>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<xacro:cylinder_inertia r="0.0635" h="0.0381" m="0.2"/>
+		</inertial>
+    	<visual>
+    		<origin xyz="0 0 0" rpy="0 0 0"/>
+    		<geometry>
+    			<cylinder radius="0.0635" length="0.0381"/>
+    		</geometry>
+    	</visual>
+    	<collision>
+    		<origin xyz="0 0 0" rpy="0 0 0"/>
+    		<geometry>
+    			<cylinder radius="0.0635" length="0.0381"/>
+    		</geometry>
+    	</collision>
+    </link>
+
+    <link name="right_wheel">
+		<inertial>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<xacro:cylinder_inertia r="0.0635" h="0.0381" m="0.2"/>
+		</inertial>
+    	<visual>
+    		<origin xyz="0 0 0" rpy="0 0 0"/>
+    		<geometry>
+    			<cylinder radius="0.0635" length="0.0381"/>
+    		</geometry>
+    	</visual>
+    	<collision>
+    		<origin xyz="0 0 0" rpy="0 0 0"/>
+    		<geometry>
+    			<cylinder radius="0.0635" length="0.0381"/>
+    		</geometry>
+    	</collision>
+    </link>
+
+    <link name="jetson_link">
+		<inertial>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<xacro:box_inertia x="0.07" y="0.045" z="0.015" m="0.2"/>
+		</inertial>
+    	<visual>
+    		<origin xyz="0 0 0" rpy="0 0 0"/>
+    		<geometry>
+    			<mesh filename="package://agv_description/urdf/meshes/jetson_nano.STL" />
+    		</geometry>
+    		<material name="light_red">
+       			<color rgba="0.8 0.2 0.4 1"/>
+     	    </material>
+    	</visual>
+    	<collision>
+    		<origin xyz="0 0 0" rpy="0 0 0"/>
+    		<geometry>
+    			<mesh filename="package://agv_description/urdf/meshes/jetson_nano.STL" />
+    		</geometry>
+    		<material name="light_red">
+       			<color rgba="0.8 0.2 0.4 1"/>
+     	    </material>
+    	</collision>
+    </link>
+
+    <joint name="jetson_joint" type="fixed">
+    	<parent link="base_link"/>
+    	<child link="jetson_link"/>
+		<origin xyz="-0.25 0 0.05" rpy="1.52 0 -1.5"/>
+    </joint>
+
+    <sensor_d435 parent="base_link" name="camera2">
+        <origin xyz="0.31 0 0.115" rpy="0 0 0"/>
+    </sensor_d435>
+
+	<sensor_t265 parent="base_link" name="camera1">
+        <origin xyz="0.31 0 0.10" rpy="1.5 0 -1.5"/>
+    </sensor_t265>
+
+	<link name="laser">
+		<visual>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<geometry>
+				<box size="0.2 0.1 0.1"/>	
+			</geometry>
+			</visual>
+		 <collision>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<geometry>
+				<box size="0.2 0.1 0.1"/>
+			</geometry>
+		</collision>
+	</link>
+
+	<joint name="laser_joint" type="fixed">
+		<parent link="base_link"/>
+		<child link="laser"/>
+		<origin xyz="0 0 0.2" rpy="0 0 0"/>
+	</joint>
+
+	<joint name="right_wheel_joint" type="continuous">
+		<origin xyz="0 0.18 0.02" rpy="1.56 0 0"/>
+		<axis xyz="0 0 -1"/>
+		<parent link="base_link"/>
+		<child link="left_wheel"/>
+	</joint>
+
+	<joint name="left_wheel_joint" type="continuous">
+		<origin xyz="0 -0.219 0.02" rpy="1.56 0 0"/>
+		<axis xyz="0 0 -1"/>
+		<parent link="base_link"/>
+		<child link="right_wheel"/>
+	</joint>
+
+	<link name="caster_front_right_link">
+		<inertial>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<xacro:sphere_inertia r="0.0635" m="0.09"/>
+		</inertial>
+		<visual>
+			<geometry>
+				<sphere radius="0.0635"/>
+    			<!--<mesh filename="package://agv_description/urdf/meshes/caster_wheel.dae" />-->
+			</geometry>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.0635"/>
+				<!--<mesh filename="package://agv_description/urdf/meshes/caster_wheel.dae" />-->		
+			</geometry>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+		</collision>
+	</link>
+
+	<link name="caster_front_left_link">
+		<inertial>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<xacro:sphere_inertia r="0.0635" m="0.09"/>
+		</inertial>
+		<visual>
+			<geometry>
+				<sphere radius="0.0635"/>
+				<!--<mesh filename="package://agv_descriptionf/urdf/meshes/caster_wheel.dae" />-->
+			</geometry>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.0635"/>
+				<!--<mesh filename="package://agv_urdf/urdf/meshes/caster_wheel.dae" />-->
+			</geometry>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+		</collision>
+	</link>
+
+	<link name="caster_back_right_link">
+		<inertial>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<xacro:sphere_inertia r="0.0635" m="0.09"/>
+		</inertial>
+		<visual>
+			<geometry>
+				<sphere radius="0.0635"/>
+				<!--<mesh filename="package://agv_urdf/urdf/meshes/caster_wheel.dae" />-->
+			</geometry>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.0635"/>
+				<!--<mesh filename="package://agv_urdf/urdf/meshes/caster_wheel.dae" />-->
+			</geometry>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+		</collision>
+	</link>
+
+	<link name="caster_back_left_link">
+		<inertial>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<xacro:sphere_inertia r="0.0635" m="0.09"/>
+		</inertial>
+		<visual>
+			<geometry>
+				<sphere radius="0.0635"/>
+				<!--<mesh filename="package://agv_urdf/urdf/meshes/caster_wheel.dae" />-->
+
+			</geometry>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.0635"/>
+				<!--<mesh filename="package://agv_urdf/urdf/meshes/caster_wheel.dae" />-->
+			</geometry>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+		</collision>
+	</link>
+
+	<joint name="caster_f_r_joint" type="fixed">
+		<origin xyz="0.3 0.15 0.02" rpy="0 0 0"/>
+		<parent link="base_link"/>
+		<child link="caster_front_right_link"/>
+		
+	</joint>
+
+	<joint name="caster_f_l_joint" type="fixed">
+		<parent link="base_link"/>
+		<child link="caster_front_left_link"/>
+		<origin xyz="0.3 -0.17 0.02" rpy="0 0 0"/>
+	</joint>
+
+	<joint name="caster_b_r_joint" type="fixed">
+		<origin xyz="-0.3 0.15 0.02" rpy="0 0 0"/>
+		<parent link="base_link"/>
+		<child link="caster_back_right_link"/>
+	</joint>
+
+	<joint name="caster_b_l_joint" type="fixed">
+		<origin xyz="-0.3 -0.17 0.02" rpy="0 0 0"/>
+		<parent link="base_link"/>
+		<child link="caster_back_left_link"/>
+	</joint>
+
+
+
+</robot>

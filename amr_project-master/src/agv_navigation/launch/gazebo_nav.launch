@@ -1,0 +1,16 @@
+<launch>
+
+<include file="$(find agv_description)/launch/gazebo.launch"/>
+<include file="$(find agv_description)/launch/spawn.launch"/>
+<include file="$(find agv_description)/launch/rviz.launch"/>
+
+<arg name="file" value="/home/suhas/gazebo.yaml"/>
+<node name="map_server" pkg="map_server" type="map_server" args="$(arg file)" output="screen"/>
+
+
+<include file="$(find agv_navigation)/launch/amcl.launch"/>
+<include file="$(find agv_navigation)/launch/move_base.launch"/>
+
+<node name="rviz" pkg="rviz" type="rviz" output="screen" args="-d $(find agv_navigation)/config/nav.rviz"/>
+<param name ="/use_sim_time" value="true"/>
+</launch>
