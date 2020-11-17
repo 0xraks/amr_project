@@ -27,7 +27,7 @@
   <arg name="publish_odom_tf"     default="true"/>
   
   <group ns="$(arg camera)">
-    <include file="$(find t265_urdf)/launch/includes/nodelet.launch.xml">
+    <include file="$(find agv_navigation)/launch/includes/nodelet.launch.xml">
       <arg name="tf_prefix"                value="$(arg tf_prefix)"/>
       <arg name="serial_no"                value="$(arg serial_no)"/>
       <arg name="usb_port_id"              value="$(arg usb_port_id)"/>
